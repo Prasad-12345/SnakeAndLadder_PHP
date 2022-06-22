@@ -9,4 +9,6 @@
             echo "Player starts from $this->startPosition";
         }
     }
+    $game = new SnakeAndLadder();
+    $game->welcome();
 ?>
