@@ -1,8 +1,10 @@
 <?php
     class SankeAndLadder{
         //variable
-        private $startPosition = 0;
+        public $startPosition = 0;
         private $previousPosition;
+        private $diceNum;
+        private $count = 0;
 
         //welcome message
         public function welcome(){
@@ -12,10 +14,11 @@
 
         //function to generate random number between 1 to 6
         public function rollDice(){
-            //$this->previousPosition = $this->startPosition;
-            $diceNum = rand(1, 6);
+            $this->diceNum = rand(1, 6);
+            $this->count++;
+            echo "Number of times dice rolled :" . $this->count . "____";
             //echo "Previous Position :" . $this->previousPosition . " " . "StartPosition :" . $this->startPosition;
-            return $diceNum;
+            return $this->diceNum;
         }
 
         //Function to generate random number between 1 to 3
@@ -24,31 +27,48 @@
         }
 
         //Function to decide next position of player
-        public function nextMove($diceNum){    
-            $choice = $this->option();
-            $this->previousPosition = $this->startPosition;
-            switch($choice){
-                case 1:
-                    $this->startPosition = $this->startPosition;
-                    echo "Previous Position :" . $this->previousPosition . " " . "StartPosition :" . $this->startPosition;
-                    break;
-
-                case 2:
-                    $this->startPosition += $diceNum;
-                    echo "Previous Position :" . $this->previousPosition . " " . "StartPosition :" . $this->startPosition;
-                    break;
-
-                case 3:
-                    $this->startPosition -= $diceNum;
-                    echo "Previous Position :" . $this->previousPosition . " " . "StartPosition :" . $this->startPosition;
-                    break;
-            }
-        }
+        public function nextMove($choice){   
+                $this->previousPosition = $this->startPosition;
+                switch($choice){
+                    case 1:
+                        $this->startPosition = $this->startPosition;
+                        echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        break;
+    
+                    case 2:
+                        $this->startPosition += $this->diceNum;
+                        if($this->startPosition < 100){
+                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        }
+                        elseif($this->startPosition > 100){
+                            $this->startPosition = $this->previousPosition;
+                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        }
+                        elseif($this->startPosition == 100){
+                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                            echo "Player won the game";
+                        }
+                        break;
+    
+                    case 3:
+                        $this->startPosition -= $this->diceNum;
+                        if($this->startPosition < 0){
+                            $this->startPosition = 0;
+                        }
+                        echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        break;
+                }
+            
+            } 
+        
     }
 
     //object
-    $game = new SankeAndLadder;
+    $game = new SankeAndLadder();
     $game->welcome();
-    $diceNum = $game->rollDice();
-    $game->nextMove($diceNum);
+    while($game->startPosition < 100){
+        $game->rollDice();
+        $choice = $game->option();
+        $game->nextMove($choice);
+    }  
 ?>
