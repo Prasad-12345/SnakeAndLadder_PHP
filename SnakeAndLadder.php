@@ -2,9 +2,13 @@
     class SankeAndLadder{
         //variable
         public $startPosition = 0;
-        private $previousPosition;
-        private $diceNum;
+        public $diceNum = 0;
         private $count = 0;
+        public $player1Position = 0;
+        public $player2Position = 0;
+        public $previousPosition1;
+        public $previousPosition2;
+        private $flag = true;
 
         //welcome message
         public function welcome(){
@@ -28,47 +32,94 @@
 
         //Function to decide next position of player
         public function nextMove($choice){   
-                $this->previousPosition = $this->startPosition;
+            //$this->flag = true;
+            $this->previousPosition1 = $this->player1Position;
+            $this->previousPosition2 = $this->player2Position;
                 switch($choice){
                     case 1:
-                        $this->startPosition = $this->startPosition;
-                        echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        if($this->flag == true){
+                            $this->player1Position = $this->player1Position;
+                            echo "Player1 Previous Position :" . $this->previousPosition1 . "____" . "Player1 StartPosition :" . $this->player1Position . "\n";
+                            $this->flag = false;
+                        }
+                        else{
+                            $this->player2Position = $this->player2Position;
+                            echo "Player2 Previous Position :" . $this->previousPosition2 . "____" . "Player2 StartPosition :" . $this->player2Position . "\n";
+                            $this->flag = true;
+                        }
                         break;
     
                     case 2:
-                        $this->startPosition += $this->diceNum;
-                        if($this->startPosition < 100){
-                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        if($this->flag == true){
+                            $this->player1Position += $this->diceNum;
+                       
+                            if($this->player1Position < 100){
+                                echo "Player1 Previous Position :" . $this->previousPosition1 . "____" . "Player1 StartPosition :" . $this->player1Position . "\n";
+                            }
+                            elseif($this->player1Position > 100){
+                                $this->player1Position = $this->previousPosition1;
+                                echo "Player1 Previous Position :" . $this->previousPosition1 . "____" . "Player1 StartPosition :" . $this->player1Position . "\n";
+                            }
+                            elseif($this->player1Position == 100){
+                                echo "Player1 Previous Position :" . $this->previousPosition1 . "____" . "Player1 StartPosition :" . $this->player1Position . "\n";
+                                echo "Player1 won the game";
+                                break;
+                            }
+                            $this->diceNum = $this->rollDice();
+                            $choice = $this->option();
+                            $this->nextMove($choice);
+                            $this->flag = false;
                         }
-                        elseif($this->startPosition > 100){
-                            $this->startPosition = $this->previousPosition;
-                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
-                        }
-                        elseif($this->startPosition == 100){
-                            echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
-                            echo "Player won the game";
-                        }
+                        else{
+                            $this->player2Position += $this->diceNum;
+                            
+                            if($this->player2Position < 100){
+                                echo "Player2 Previous Position :" . $this->previousPosition2 . "____" . "Player2 StartPosition :" . $this->player2Position . "\n";
+                            }
+                            elseif($this->player2Position > 100){
+                                $this->player2Position = $this->previousPosition2;
+                                echo "Player2 Previous Position :" . $this->previousPosition2 . "____" . "Player2 StartPosition :" . $this->player2Position . "\n";
+                            }
+                            elseif($this->player2Position == 100){
+                                echo "Player2 Previous Position :" . $this->previousPosition2 . "____" . "Player2 StartPosition :" . $this->player2Position . "\n";
+                                echo "Player2 won the game";
+                                break;
+                            }
+                            $this->diceNum = $this->rollDice();
+                            $choice = $this->option();
+                            $this->nextMove($choice);
+                            $this->flag = true;
+                        }  
                         break;
     
                     case 3:
-                        $this->startPosition -= $this->diceNum;
-                        if($this->startPosition < 0){
-                            $this->startPosition = 0;
+                        if($this->flag == true){
+                            $this->player1Position -= $this->diceNum;
+                            if($this->player1Position < 0){
+                                $this->player1Position = 0;
+                            }
+                            echo "Player1 Previous Position :" . $this->previousPosition1 . "____" . "Player1 StartPosition :" . $this->player1Position . "\n";
+                            $this->flag = false;
                         }
-                        echo "Previous Position :" . $this->previousPosition . "____" . "StartPosition :" . $this->startPosition . "\n";
+                        else{
+                            $this->player2Position -= $this->diceNum;
+                            if($this->player2Position < 0){
+                                $this->player2Position = 0;
+                            }
+                            echo "Player2 Previous Position :" . $this->previousPosition2 . "____" . "Player2 StartPosition :" . $this->player2Position . "\n";
+                            $this->flag = true;
+                        }    
                         break;
                 }
-            
-            } 
-        
+            }        
     }
 
     //object
     $game = new SankeAndLadder();
     $game->welcome();
-    while($game->startPosition < 100){
+    while($game->player1Position < 100 && $game->player2Position < 100){
         $game->rollDice();
         $choice = $game->option();
         $game->nextMove($choice);
-    }  
+    }        
 ?>
